@@ -64,7 +64,7 @@ namespace PickMe.Web.Controllers
         }
 
 
-
+        [AllowAnonymous]
         [HttpGet]
         public async Task<IActionResult> Details(int id)
         {
@@ -123,8 +123,8 @@ namespace PickMe.Web.Controllers
             {
                 result = await _surveyService.AddLikeAsync(surveyId, userId);
             }
-
-            return RedirectToAction("Details", new { id = surveyId });
+            // Buton işlevinden sonra aynı sayfada kalır.
+            return Redirect(Request.Headers["Referer"].ToString());
         }
 
         [HttpPost]
@@ -138,7 +138,8 @@ namespace PickMe.Web.Controllers
             }
 
             var report = await _surveyService.ReportSurveyAsync(surveyId, userId, reason);
-            return RedirectToAction("Details", new { id = surveyId });
+            TempData["ReportSuccess"] = "Şikayetiniz başarıyla gönderildi."; // Mesajı sakla
+            return Redirect(Request.Headers["Referer"].ToString());
         }
 
         [HttpGet]

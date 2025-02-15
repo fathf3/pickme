@@ -8,15 +8,38 @@
     double image2Percentage = totalVotes > 0 ? (double)Model.Image2Votes * 100 / totalVotes : 0;
 }
 
+
+@if (TempData["ReportSuccess"] != null)
+{
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            var toastElement = document.getElementById("report-toast");
+            var toast = new bootstrap.Toast(toastElement);
+            toast.show();
+        });
+    </script>
+
+    <div class="toast-container position-fixed top-0 end-0 p-3">
+        <div id="report-toast" class="toast align-items-center text-white bg-success border-0" role="alert" aria-live="assertive" aria-atomic="true">
+            <div class="d-flex">
+                <div class="toast-body">
+                    @TempData["ReportSuccess"]
+                </div>
+                <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+            </div>
+        </div>
+    </div>
+}
+
 <div class="container mt-4">
     <div class="card">
         @if (User.IsInRole("Admin"))
-                        {
+        {
             <form asp-action="Delete" asp-controller="Survey" asp-route-id="@Model.Id" method="post" onsubmit="return confirm('Bu anketi silmek istediğinize emin misiniz?');">
                 <button type="submit" class="btn btn-danger"><i class="bi bi-trash"></i> Anketi Sil</button>
             </form>
-           
-                        }
+
+        }
         <div class="card-header">
             <h2>@Model.Title</h2>
             <div class="d-flex justify-content-between align-items-center">
@@ -26,28 +49,32 @@
         </div>
         <div class="card-body">
             <p class="mb-4">@Model.Description</p>
+
             <div id="message-container" style="display:none;" class="alert alert-success"></div>
+
             <div class="row">
                 <div class="col-md-6 mb-3 text-center">
                     <div class="image-container">
                         <img src="@Model.Image1Url" alt="Resim 1" class="survey-image img-fluid w-100 vote-button" data-survey-id="@Model.Id" data-image="1">
                         <div class="vote-count mt-2">
-                          
                         </div>
                     </div>
-                   
-                   
+                    <br />
+                    <span class="btn btn-sm btn-primary">@Model.Image1Votes <i class="bi bi-person"></i></span>
                 </div>
-             
+
                 <div class="col-md-6 mb-3 text-center ">
                     <div class="image-container ">
                         <img src="@Model.Image2Url" alt="Resim 2" class="survey-image img-fluid w-100 vote-button" data-survey-id="@Model.Id" data-image="2">
                         <div class="vote-count mt-2">
-                            
                         </div>
-                    </div>  
+                    </div>
+                    <br />
+                    <span class="btn btn-sm btn-primary">
+                        @Model.Image2Votes <i class="bi bi-person"></i>
+                    </span>
                 </div>
-              
+
             </div>
             <div class="progress-container">
                 <div class="progress-bar-custom bg-blue-gradient" style="width: @image1Percentage%;">
@@ -88,8 +115,8 @@
                         <form asp-action="AddComment" method="post">
                             <input type="hidden" name="surveyId" value="@Model.Id" />
                             <div class="form-group">
-                                <textarea name="content" class="form-control" rows="3" 
-                                        placeholder="Yorumunuzu yazın..." required></textarea>
+                                <textarea name="content" class="form-control" rows="3"
+                                          placeholder="Yorumunuzu yazın..." required></textarea>
                             </div>
                             <button type="submit" class="btn btn-primary mt-2">
                                 <i class="bi bi-send"></i> Yorum Ekle
@@ -182,95 +209,10 @@
 </div>
 
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
     <script src="~/js/survey.js"></script>
 }
 
-<style>
-.image-container {
-    position: relative;
-    aspect-ratio: 1 / 1;
-    overflow: hidden;
-    border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-    max-width: 200px;  /* Maksimum genişlik */
-    margin: 0 auto;    /* Merkeze hizalama */
-}
 
-.survey-image {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    max-height: 200px;  /* Maksimum yükseklik */
-}
-
-.vote-count {
-    text-align: center;
-}
-
-.vote-button {
-    display: block;
-    width: 100%;
-    max-width: 200px;  /* Buton genişliğini resimle aynı yap */
-    margin: 0 auto;    /* Merkeze hizalama */
-}
-
-.comment-card {
-    border-left: 4px solid #007bff;
-    background-color: #f8f9fa;
-}
-
-.comment-card:hover {
-    background-color: #fff;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-    transition: all 0.3s ease;
-}
-
-.comments {
-    max-height: 500px;
-    overflow-y: auto;
-}
-
-.comment-row {
-    transition: background-color 0.2s ease;
-}
-
-.comment-row:hover {
-    background-color: #f8f9fa;
-}
-
-.table th {
-    border-top: 2px solid #dee2e6;
-    background-color: #f8f9fa;
-}
-
-.table td {
-    vertical-align: middle;
-}
-
-.comment-form textarea {
-    border: 2px solid #dee2e6;
-    border-radius: 8px;
-}
-
-.comment-form textarea:focus {
-    border-color: #007bff;
-    box-shadow: none;
-}
-
-    .alert-message {
-        padding: 10px;
-        margin: 10px 0;
-        border-radius: 5px;
-        color: white;
-        font-weight: bold;
-    }
-
-    .success-message {
-        background-color: green;
-    }
-
-    .error-message {
-        background-color: red;
-    }
-</style>

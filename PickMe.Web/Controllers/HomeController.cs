@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using PickMe.Business.Services.Abstractions;
+using PickMe.Core.Models;
 using PickMe.Web.Models;
 using System.Diagnostics;
 
@@ -14,10 +15,26 @@ namespace PickMe.Web.Controllers
             _surveyService = surveyService;
         }
 
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string filterType)
         {
-            var surveys = await _surveyService.GetActiveSurveysAsync();
+            IEnumerable<Survey> surveys;
+
+            switch (filterType)
+            {
+                case "mostLiked":
+                    surveys = await _surveyService.GetMostLikedSurveysAsync();
+                    break;
+                case "mostCommented":
+                    surveys = await _surveyService.GetMostCommentedSurveysAsync();
+                    break;
+
+                default: // En yeni anketler (varsayýlan)
+                    surveys = await _surveyService.GetActiveSurveysAsync();
+                    break;
+            }
+
             return View(surveys);
+
         }
 
         public IActionResult Privacy()

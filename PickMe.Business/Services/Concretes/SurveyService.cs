@@ -163,14 +163,14 @@ namespace PickMe.Business.Services.Concretes
 
         public async Task<IEnumerable<Survey>> GetMostLikedSurveysAsync()
         {
-            var x = await _surveyRepository.GetAllAsync();
+            var x = await _surveyRepository.GetActiveSurveysAsync();
             var d = x.OrderByDescending(s => s.Likes.Count).ToList();
             return d;
 
         }
         public async Task<IEnumerable<Survey>> GetMostCommentedSurveysAsync()
         {
-            var x = await _surveyRepository.GetAllAsync();
+            var x = await _surveyRepository.GetActiveSurveysAsync();
             var d = x.OrderByDescending(s => s.Comments.Count).ToList();
             return d;
 
