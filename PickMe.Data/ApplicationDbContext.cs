@@ -32,6 +32,8 @@ namespace PickMe.Data
                 .WithMany(s => s.Comments)
                 .HasForeignKey(c => c.SurveyId)
                 .OnDelete(DeleteBehavior.Cascade);
+            
+            
 
             builder.Entity<Comment>()
                 .HasOne(c => c.User)

@@ -29,6 +29,13 @@ namespace PickMe.Web.Controllers
         {
             if (ModelState.IsValid)
             {
+                // E-posta adresinin veritabanýnda var olup olmadýðýný kontrol et
+                var existingUser = await _userManager.FindByEmailAsync(model.Email);
+                if (existingUser != null)
+                {
+                    ModelState.AddModelError(string.Empty, "Bu e-posta adresi zaten kayýtlý.");
+                    return View(model);
+                }
                 var user = new ApplicationUser
                 {
                     UserName = model.UserName,
