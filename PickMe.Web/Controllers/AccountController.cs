@@ -66,11 +66,18 @@ namespace PickMe.Web.Controllers
         {
             if (ModelState.IsValid)
             {
-                var result = await _signInManager.PasswordSignInAsync(model.UserName, model.Password, model.RememberMe, lockoutOnFailure: false);
+                // Kullanýcýyý önce username olarak ara, yoksa email olarak ara
+                var user = await _userManager.FindByNameAsync(model.UserName) ??
+                           await _userManager.FindByEmailAsync(model.UserName);
 
-                if (result.Succeeded)
+                if (user != null)
                 {
-                    return RedirectToAction("Index", "Home");
+                    var result = await _signInManager.PasswordSignInAsync(user, model.Password, model.RememberMe, lockoutOnFailure: false);
+
+                    if (result.Succeeded)
+                    {
+                        return RedirectToAction("Index", "Home");
+                    }
                 }
 
                 ModelState.AddModelError(string.Empty, "Invalid login attempt.");

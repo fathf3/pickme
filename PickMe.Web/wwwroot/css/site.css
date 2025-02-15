@@ -1,39 +1,44 @@
 html {
-  font-size: 14px;
+    font-size: 14px;
+}
+
+a {
+    text-decoration: none; /* Alt çizgiyi kaldýrýr */
+    color: black; /* Mavi rengi siyah yapar (isteðe göre deðiþtir) */
 }
 
 @media (min-width: 768px) {
-  html {
-    font-size: 16px;
-  }
+    html {
+        font-size: 16px;
+    }
 }
 
 .btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
-  box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
+    box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
 }
 
 html {
-  position: relative;
-  min-height: 100%;
+    position: relative;
+    min-height: 100%;
 }
 
 body {
-  margin-bottom: 60px;
+    margin-bottom: 60px;
 }
 
 .form-floating > .form-control-plaintext::placeholder, .form-floating > .form-control::placeholder {
-  color: var(--bs-secondary-color);
-  text-align: end;
+    color: var(--bs-secondary-color);
+    text-align: end;
 }
 
 .form-floating > .form-control-plaintext:focus::placeholder, .form-floating > .form-control:focus::placeholder {
-  text-align: start;
+    text-align: start;
 }
 
 /* Custom CSS */
 .progress-container {
     width: 100%;
-    background-color: #dfe6f5; 
+    background-color: #dfe6f5;
     border-radius: 15px;
     overflow: hidden;
     height: 30px;
@@ -61,3 +66,92 @@ body {
 .bg-light-blue {
     background: linear-gradient(90deg, #82b1ff, #5c92e0); /* Açýk mavi gradient */
 }
+
+/* Survey Details */
+.image-container {
+    position: relative;
+    aspect-ratio: 1 / 1;
+    overflow: hidden;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    max-width: 200px; /* Maksimum geniþlik */
+    margin: 0 auto; /* Merkeze hizalama */
+}
+
+.survey-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    max-height: 200px; /* Maksimum yükseklik */
+}
+
+.vote-count {
+    text-align: center;
+}
+
+.vote-button {
+    display: block;
+    width: 100%;
+    max-width: 200px; /* Buton geniþliðini resimle ayný yap */
+    margin: 0 auto; /* Merkeze hizalama */
+}
+
+.comment-card {
+    border-left: 4px solid #007bff;
+    background-color: #f8f9fa;
+}
+
+    .comment-card:hover {
+        background-color: #fff;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        transition: all 0.3s ease;
+    }
+
+.comments {
+    max-height: 500px;
+    overflow-y: auto;
+}
+
+.comment-row {
+    transition: background-color 0.2s ease;
+}
+
+    .comment-row:hover {
+        background-color: #f8f9fa;
+    }
+
+.table th {
+    border-top: 2px solid #dee2e6;
+    background-color: #f8f9fa;
+}
+
+.table td {
+    vertical-align: middle;
+}
+
+.comment-form textarea {
+    border: 2px solid #dee2e6;
+    border-radius: 8px;
+}
+
+.comment-form textarea:focus {
+    border-color: #007bff;
+    box-shadow: none;
+}
+.alert-message {
+    padding: 10px;
+    margin: 10px 0;
+    border-radius: 5px;
+    color: white;
+    font-weight: bold;
+}
+
+.success-message {
+    background-color: green;
+}
+
+.error-message {
+    background-color: red;
+}
+
+

@@ -43,6 +43,7 @@ namespace PickMe.Data.Repositories.Concretes
                 .Include(s => s.Likes)
                 .Include(s => s.Reports)
                 .Include(s => s.Comments)
+                .ThenInclude(c => c.User)
                 .Where(s => s.IsActive)
                 .OrderByDescending(s => s.CreatedAt)
                 .ToListAsync();

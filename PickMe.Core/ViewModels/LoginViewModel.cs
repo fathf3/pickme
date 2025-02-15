@@ -7,6 +7,7 @@ namespace PickMe.Core.ViewModels
         [Required]
         [Display(Name = "Username")]
         public string UserName { get; set; } = string.Empty;
+        
 
         [Required]
         [DataType(DataType.Password)]

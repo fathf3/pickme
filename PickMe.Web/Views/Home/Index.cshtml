@@ -1,14 +1,54 @@
 @model IEnumerable<PickMe.Core.Models.Survey>
+@using System.Security.Claims
 
 @{
     ViewData["Title"] = "Ana Sayfa";
 
 }
 
+@if (TempData["ReportSuccess"] != null)
+{
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            var toastElement = document.getElementById("report-toast");
+            var toast = new bootstrap.Toast(toastElement);
+            toast.show();
+        });
+    </script>
+
+    <div class="toast-container position-fixed top-0 end-0 p-3">
+        <div id="report-toast" class="toast align-items-center text-white bg-success border-0" role="alert" aria-live="assertive" aria-atomic="true">
+            <div class="d-flex">
+                <div class="toast-body">
+                    @TempData["ReportSuccess"]
+                </div>
+                <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+            </div>
+        </div>
+    </div>
+}
+
 <div class="text-center mb-4">
     <h1 class="display-4">PickMe'ye Hoş Geldiniz</h1>
-    <p>Hangi fotoğraf daha iyi? Oy verin ve görüşlerinizi paylaşın!</p>
+    
 </div>
+
+<form method="get" class="mb-3">
+    <div class="row">
+        <div class="col-md-4">
+            <label for="filterType" class="form-label">Filtre Seç</label>
+            <select name="filterType" id="filterType" class="form-select">
+                <option value="latest">En Yeni</option>
+                <option value="mostLiked">En Çok Beğenilen</option>
+                <option value="mostCommented">En Çok Yorum Alan</option>
+                @* <option value="mostVoted">En Çok Oy Alan</option> *@
+            </select>
+        </div>
+        <div class="col-md-4 d-flex align-items-end">
+            <button type="submit" class="btn btn-primary">Filtrele</button>
+        </div>
+    </div>
+</form>
 
 <div class="row">
     @foreach (var survey in Model)
@@ -19,7 +59,7 @@
         <div class="col-md-6 col-lg-4 mb-4">
             <div class="card h-100">
                 <div class="card-header">
-                    <h5 class="card-title mb-0">@survey.Title</h5>
+                    <a asp-controller="Survey" asp-action="Details" asp-route-id="@survey.Id"> <h5 class="card-title mb-0">@survey.Title</h5></a>
                 </div>
                 <div class="card-body">
                     <div class="row">
@@ -27,14 +67,26 @@
                             <img src="@survey.Image1Url" class="img-fluid mb-2" alt="Image 1" style="height: 150px; object-fit: cover; width: 100%;">
                             <div class="text-center">
                                 
+                                <span class="btn btn-sm btn-primary">
+                                    @survey.Image1Votes <i class="bi bi-person"></i>
+                                </span>
+                                <br />
                             </div>
                         </div>
                         <div class="col-6">
                             <img src="@survey.Image2Url" class="img-fluid mb-2" alt="Image 2" style="height: 150px; object-fit: cover; width: 100%;">
                             <div class="text-center">
-                               
                             </div>
+                            <div class="text-center">
+                                
+                                <span class="btn btn-sm btn-primary">
+                                    @survey.Image2Votes <i class="bi bi-person"></i>
+                                </span>
+                                
+                            </div>
+                            <br />
                         </div>
+                       
                         <div class="progress-container">
                             <div class="progress-bar-custom bg-blue-gradient" style="width: @image1Percentage%;">
                                 @image1Percentage.ToString("0.##")%
@@ -46,16 +98,66 @@
 
                     </div>
                     <p class="card-text mt-3">@survey.Description</p>
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <div>
+                            <form asp-controller="Survey" asp-action="ToggleLike" method="post" class="d-inline">
+                                <input type="hidden" name="surveyId" value="@survey.Id" />
+                                <button type="submit" class="btn @(survey.Likes?.Any(l => l.UserId == User?.FindFirstValue(ClaimTypes.NameIdentifier)) == true ? "btn-danger" : "btn-outline-danger")">
+                                    <i class="bi bi-heart-fill"></i> @(survey.Likes?.Count ?? 0)
+                                </button>
+                            </form>
+                        </div>
+                        <a asp-controller="Survey" asp-action="Details" asp-route-id="@survey.Id">
+                            <div class="d-flex justify-content-between">
+                                <button type="submit" class="btn btn-outline-primary">
+                                    <i class="bi bi-chat-dots"></i> @(survey.Comments?.Count ?? 0)
+                                </button>
+                            </div>
+                        </a>
+                        <button class="btn btn-warning" data-survey-id="@survey.Id"
+                                data-bs-toggle="modal" data-bs-target="#reportModal">
+                            <i class="bi bi-flag-fill"></i> Şikayet Et
+                        </button>
+                    </div>
                 </div>
+
                 <div class="card-footer">
                     <div class="d-flex justify-content-between align-items-center">
                         <small class="text-muted">@survey.CreatedAt.ToString("dd/MM/yyyy HH:mm")</small>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <small class="text-muted">Oluşturan: @survey.CreatedBy?.UserName</small>
+                        </div>
                         <a asp-controller="Survey" asp-action="Details" asp-route-id="@survey.Id" class="btn btn-primary btn-sm">Detaylar</a>
                     </div>
                 </div>
             </div>
         </div>
     }
+</div>
+
+<!-- Report Modal -->
+<div class="modal fade" id="reportModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form asp-controller="Survey" asp-action="Report" method="post">
+                <input type="hidden" id="surveyId" name="surveyId" />
+                <div class="modal-header">
+                    <h5 class="modal-title">Anketi Şikayet Et</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="reason">Şikayet Nedeni</label>
+                        <textarea name="reason" id="reason" class="form-control" rows="3" required></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">İptal</button>
+                    <button type="submit" class="btn btn-primary">Şikayet Et</button>
+                </div>
+            </form>
+        </div>
+    </div>
 </div>
 
 @if (!Model.Any())
@@ -65,3 +167,19 @@
         <a asp-controller="Survey" asp-action="Create" class="btn btn-primary">İlk Anketi Oluştur</a>
     </div>
 }
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        var reportModal = document.getElementById('reportModal');
+        reportModal.addEventListener('show.bs.modal', function (event) {
+            var button = event.relatedTarget; // Tıklanan butonu al
+            var surveyId = button.getAttribute('data-survey-id'); // Butonun içindeki ID'yi al
+            console.log(surveyId);
+            var inputSurveyId = document.getElementById('surveyId');
+            console.log(inputSurveyId);
+            if (inputSurveyId) {
+                inputSurveyId.value = surveyId; // Modal içindeki input'a ID'yi ata
+            }
+        });
+    });
+</script>
+

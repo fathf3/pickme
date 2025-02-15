@@ -16,9 +16,10 @@
                         <div asp-validation-summary="ModelOnly" class="text-danger"></div>
 
                         <div class="form-group mb-3">
-                            <label asp-for="UserName" class="control-label">Kullanıcı Adı</label>
+                            <label asp-for="UserName" class="control-label">Kullanıcı Adı veya Email</label>
                             <input asp-for="UserName" class="form-control" />
                             <span asp-validation-for="UserName" class="text-danger"></span>
+
                         </div>
 
                         <div class="form-group mb-3">
@@ -40,7 +41,7 @@
                     </form>
                 </div>
                 <div class="card-footer">
-                    <p>Hesabınız yok mu? <a asp-action="Register">Kayıt olun</a></p>
+                    <p>Hesabınız yok mu? <a class="btn btn-primary" asp-action="Register">Kayıt olun</a></p>
                 </div>
             </div>
         </div>
