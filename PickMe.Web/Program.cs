@@ -25,7 +25,7 @@ builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
 // Configure Repository and Service Dependencies
 
 builder.Services.AddDataService();
-builder.Services.AddBusinessService();
+builder.Services.AddBusinessService(builder.Configuration);
 
 
 
