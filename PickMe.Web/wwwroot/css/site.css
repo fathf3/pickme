@@ -4,7 +4,7 @@ html {
 
 a {
     text-decoration: none; /* Alt çizgiyi kaldýrýr */
-    color: black; /* Mavi rengi siyah yapar (isteðe göre deðiþtir) */
+    
 }
 
 @media (min-width: 768px) {
