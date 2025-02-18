@@ -23,6 +23,7 @@ namespace PickMe.Data.Repositories.Concretes
                 .Include(s => s.Comments)
                 .Include(s => s.Likes)
                 .Include(s => s.Reports)
+                .Include(s => s.Category)
                 .Where(s => s.CreatedById == userId)
                 .ToListAsync();
         }
@@ -33,6 +34,7 @@ namespace PickMe.Data.Repositories.Concretes
                 .ThenInclude(c => c.User)
                 .Include(s => s.Likes)
                 .Include(s => s.Reports)
+                .Include(s => s.CreatedBy)
                 .FirstOrDefaultAsync(s => s.Id == surveyId);
 
         }
@@ -43,8 +45,10 @@ namespace PickMe.Data.Repositories.Concretes
                 .Include(s => s.Likes)
                 .Include(s => s.Reports)
                 .Include(s => s.Comments)
-                .ThenInclude(c => c.User)
+                .Include(s => s.CreatedBy)
+                .Include(s => s.Category)
                 .Where(s => s.IsActive)
+                
                 .OrderByDescending(s => s.CreatedAt)
                 .ToListAsync();
             return x;
@@ -70,6 +74,18 @@ namespace PickMe.Data.Repositories.Concretes
             }
         }
 
-       
+        public async Task<IEnumerable<Survey>> GetSurveysByCategoryAsync(int categoryId)
+        {
+            var x = await _dbContext.Surveys
+                .Include(s => s.Likes)
+                .Include(s => s.Reports)
+                .Include(s => s.Comments)
+                .Include(s => s.CreatedBy)
+                .Include(s => s.Category)
+                .Where(s => s.CategoryId == categoryId)
+                .ToListAsync();
+                
+            return x;
+        }
     }
 }

@@ -1,0 +1,42 @@
+﻿@model IEnumerable<Survey>
+@{
+    ViewData["Title"] = "MySurvey";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Survey Name</th>
+            <th>Likes</th>
+            <th>Comments</th>
+            <th>Reports</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var survey in Model)
+        {
+            <tr>
+                <td>@survey.Title</td>
+                <td>@survey.Likes.Count</td>
+                <td>@survey.Comments.Count</td>
+                <td>@survey.Reports.Count</td>
+                <td class="d-flex">
+                   
+                    <form asp-action="Details" asp-controller="Survey" asp-route-id="@survey.Id" method="get" >
+                        <button type="submit" class="btn btn-primary"><i class="bi bi-arrow-right"></i> Ankete Git</button>
+                    </form>
+                    <form style="margin-left: 10px;" asp-action="Delete" asp-controller="Survey" asp-route-id="@survey.Id" method="post" onsubmit="return confirm('Bu anketi silmek istediğinize emin misiniz?');">
+                        <button type="submit" class="btn btn-danger"><i class="bi bi-trash"></i> Anketi Sil</button>
+                    </form>
+                </td>
+
+            </tr>
+        }
+    </tbody>
+</table>
+
+

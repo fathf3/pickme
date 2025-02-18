@@ -1,5 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace PickMe.Core.ViewModels
 {
@@ -18,5 +19,9 @@ namespace PickMe.Core.ViewModels
 
         [Required(ErrorMessage = "2. resim zorunludur.")]
         public IFormFile Image2File { get; set; }
+        [Required(ErrorMessage = "Lütfen bir kategori seçiniz")]
+        public int CategoryId { get; set; }
+
+        public List<SelectListItem> Categories { get; set; } = new List<SelectListItem>();
     }
 }

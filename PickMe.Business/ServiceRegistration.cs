@@ -21,6 +21,8 @@ namespace PickMe.Business
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<IReportService, ReportService>();
             services.AddScoped<IEmailService, EmailService>();
+            services.AddScoped<ICategoryService, CategoryService>();
+
             //services.Configure<EmailSettingsViewModel>(configuration.GetSection("Email"));
             services.Configure<DataProtectionTokenProviderOptions>(options =>
             {

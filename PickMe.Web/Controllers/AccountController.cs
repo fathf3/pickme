@@ -37,7 +37,9 @@ namespace PickMe.Web.Controllers
                     UserName = model.UserName,
                     Email = model.Email,
                     FirstName = model.FirstName,
-                    LastName = model.LastName
+                    LastName = model.LastName,
+                    
+                    
                 };
 
                 var result = await _userManager.CreateAsync(user, model.Password);
@@ -45,6 +47,7 @@ namespace PickMe.Web.Controllers
                 if (result.Succeeded)
                 {
                     await _signInManager.SignInAsync(user, isPersistent: false);
+                    await _userManager.AddToRoleAsync(user, "User");
                     return RedirectToAction("Index", "Home");
                 }
 
@@ -53,7 +56,7 @@ namespace PickMe.Web.Controllers
                     ModelState.AddModelError(string.Empty, error.Description);
                 }
             }
-
+            
             return View(model);
         }
 
