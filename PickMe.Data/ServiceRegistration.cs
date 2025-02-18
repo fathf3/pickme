@@ -16,6 +16,7 @@ namespace PickMe.Data
             services.AddScoped<ISurveyRepository, SurveyRepository>();
             services.AddScoped<ICommentRepository, CommentRepository>();
             services.AddScoped<IReportRepository, ReportRepository>();
+            services.AddScoped<ICategoryRepository, CategoryRepository>();
 
         }
     }

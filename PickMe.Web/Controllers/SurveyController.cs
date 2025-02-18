@@ -8,6 +8,8 @@ using System.IO;
 using System;
 using PickMe.Business.Services.Abstractions;
 using PickMe.Core.ViewModels;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.EntityFrameworkCore;
 
 namespace PickMe.Web.Controllers
 {
@@ -17,18 +19,27 @@ namespace PickMe.Web.Controllers
         private readonly ISurveyService _surveyService;
         private readonly IImageService _imageService;
         private readonly IUserService _userService;
+        private readonly ICategoryService _categoryService;
 
-        public SurveyController(ISurveyService surveyService, IImageService imageService, IUserService userService)
+        public SurveyController(ISurveyService surveyService, IImageService imageService, IUserService userService, ICategoryService categoryService)
         {
             _surveyService = surveyService;
             _imageService = imageService;
             _userService = userService;
+            _categoryService = categoryService;
         }
 
         [HttpGet]
-        public IActionResult Create()
+        public async Task<IActionResult> Create()
         {
-            return View(new SurveyViewModel());
+            var categories = await _categoryService.GetAllCategoryAsync();
+
+        var categories2 = categories.Select(c => new SelectListItem { Value = c.Id.ToString(), Text = c.Name })
+        .ToList();
+
+            var model = new SurveyViewModel { Categories = categories2 };
+
+            return View(model);
         }
 
         [HttpPost]
@@ -37,6 +48,10 @@ namespace PickMe.Web.Controllers
         {
             if (!ModelState.IsValid)
             {
+                var categories = await _categoryService.GetAllCategoryAsync();
+                model.Categories = categories
+           .Select(c => new SelectListItem { Value = c.Id.ToString(), Text = c.Name })
+           .ToList();
                 return View(model);
             }
 
@@ -56,11 +71,12 @@ namespace PickMe.Web.Controllers
                 Description = model.Description,
                 CreatedById = userId,
                 Image1Url = image1Path,
-                Image2Url = image2Path
+                Image2Url = image2Path,
+                CategoryId = model.CategoryId
             };
 
             await _surveyService.CreateSurveyAsync(survey);
-            return RedirectToAction(nameof(Index));
+            return RedirectToAction("Index","Home");
         }
 
 
@@ -196,17 +212,27 @@ namespace PickMe.Web.Controllers
             }
 
             var survey = await _surveyService.GetSurveyByIdAsync(id);
-            if (survey == null || !User.IsInRole("Admin"))
+            if (survey == null)
             {
                 return NotFound();
             }
 
-            await _surveyService.DeleteSurveyAsync(id);
-            return RedirectToAction(nameof(Index));
+            if (User.IsInRole("Admin") || survey.CreatedById.Equals(userId))
+            {
+                // Survey'i silme işlemi burada yapılabilir
+                await _surveyService.DeleteSurveyAsync(id);
+                return RedirectToAction(nameof(Index));
+            }
+            else
+            {
+                return Forbid();
+            }
+
+            
         }
 
         // GET: Survey
-        public async Task<IActionResult> Index(string filterType)
+        public async Task<IActionResult> Index(string filterType, int? categoryId)
         {
             IEnumerable<Survey> surveys;
 
@@ -235,5 +261,19 @@ namespace PickMe.Web.Controllers
 
             return View(comments);
         }
+
+        [Authorize]
+        [HttpGet]
+        public async Task<IActionResult> MySurvey()
+        {
+            var userId = _userService.GetUserId(User);
+            if (string.IsNullOrEmpty(userId))
+            {
+                return Unauthorized();
+            }
+            var surveys = await _surveyService.GetUserSurveysAsync(userId);
+            return View(surveys);
+        }
+
     }
 }

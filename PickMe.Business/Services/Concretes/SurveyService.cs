@@ -175,5 +175,10 @@ namespace PickMe.Business.Services.Concretes
             return d;
 
         }
+
+        public async Task<IEnumerable<Survey>> GetSurveysByCategoryAsync(int categoryId)
+        {
+            return await _surveyRepository.GetSurveysByCategoryAsync(categoryId);
+        }
     }
 }

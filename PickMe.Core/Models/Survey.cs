@@ -26,6 +26,10 @@ namespace PickMe.Core.Models
         public bool IsActive { get; set; }
         public string CreatedById { get; set; } = string.Empty;
         public virtual ApplicationUser CreatedBy { get; set; } = null!;
+        
+        public int CategoryId { get; set; }
+        public virtual Category Category { get; set; } = null!;
+
         public virtual ICollection<Comment> Comments { get; set; }
         public virtual ICollection<Like> Likes { get; set; }
         public virtual ICollection<Report> Reports { get; set; }

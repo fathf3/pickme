@@ -16,7 +16,7 @@
         <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
             <div class="container">
                 <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">
-                    <img src="~/images/logo/logo.jpg" alt="Logo" width="100" height="40" />
+                    <img src="~/images/logo/logo.png" alt="Logo" width="100" height="40" />
                 </a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
                         aria-expanded="false" aria-label="Toggle navigation">
@@ -30,6 +30,12 @@
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-controller="Survey" asp-action="Create">Yeni Anket</a>
                         </li>
+                        @if (User.IsInRole("Admin") || User.IsInRole("User"))
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-controller="Survey" asp-action="MySurvey">Anketlerim</a>
+                            </li>
+                        }
                          @if (User.IsInRole("Admin"))
                         { 
                             <li class="nav-item">
@@ -37,6 +43,9 @@
                             </li>
                             <li class="nav-item">
                                 <a class="nav-link text-dark" asp-controller="Reports" asp-action="Index">Þikayetler</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-controller="Category" asp-action="Index">Kategoriler</a>
                             </li>
                          } 
                       

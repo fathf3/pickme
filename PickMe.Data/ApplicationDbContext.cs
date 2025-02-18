@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using PickMe.Core.Models;
+using System.Reflection.Emit;
 
 namespace PickMe.Data
 {
@@ -16,6 +17,8 @@ namespace PickMe.Data
         public DbSet<Like> Likes { get; set; }
         public DbSet<Report> Reports { get; set; }
         public DbSet<Vote> Votes { get; set; }
+        public DbSet<Category> Categories { get; set; }
+
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
@@ -76,6 +79,18 @@ namespace PickMe.Data
                 .WithMany()
                 .HasForeignKey(v => v.UserId)
                 .OnDelete(DeleteBehavior.NoAction);
+
+            // Category - Survey iliþkisini belirleme
+            builder.Entity<Survey>()
+                .HasOne(s => s.Category)   // Survey'in bir Category'si var
+                .WithMany(c => c.Surveys)  // Category'nin birden fazla Survey'si olabilir
+                .HasForeignKey(s => s.CategoryId)  // Foreign key olarak CategoryId kullan
+                .OnDelete(DeleteBehavior.Restrict); // Kategori silinirse baðlý anketler silinmesin
+
+            // Opsiyonel: Kategori adýný Unique yapmak
+            builder.Entity<Category>()
+                .HasIndex(c => c.Name)
+                .IsUnique();
         }
     }
 }

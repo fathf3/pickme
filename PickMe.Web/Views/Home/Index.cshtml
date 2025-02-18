@@ -3,6 +3,9 @@
 
 @{
     ViewData["Title"] = "Ana Sayfa";
+    var categories = ViewBag.Categories as List<Category>;
+    int? selectedCategory = ViewBag.SelectedCategory as int?;
+    string selectedFilter = ViewBag.SelectedFilter as string;
 
 }
 
@@ -32,23 +35,48 @@
     <h1 class="display-4">PickMe'ye Hoş Geldiniz</h1>
     
 </div>
+<form method="get" action="@Url.Action("Index")">
+    <div class="row mb-3">
+        <div class="col-md-6">
+            <label for="categoryFilter" class="form-label">Kategori Seç:</label>
+            <select id="categoryFilter" name="categoryId" class="form-select" onchange="this.form.submit()">
+                <option value="">Tüm Kategoriler</option>
+                @foreach (var category in categories)
+                {
+                    <option value="@category.Id" selected="@(category.Id == selectedCategory ? "selected" : null)">
+                        @category.Name
+                    </option>
+                }
+            </select>
+        </div>
 
-<form method="get" class="mb-3">
+        <div class="col-md-6">
+            <label for="filterType" class="form-label">Sırala:</label>
+            <select id="filterType" name="filterType" class="form-select" onchange="this.form.submit()">
+                <option value="">En Yeni</option>
+                <option value="mostLiked" selected="@(selectedFilter == "mostLiked" ? "selected" : null)">En Beğenilen</option>
+                <option value="mostCommented" selected="@(selectedFilter == "mostCommented" ? "selected" : null)">En Çok Yorum Alan</option>
+            </select>
+        </div>
+    </div>
+</form>
+
+@* <form method="get" class="mb-3">
     <div class="row">
         <div class="col-md-4">
             <label for="filterType" class="form-label">Filtre Seç</label>
             <select name="filterType" id="filterType" class="form-select">
                 <option value="latest">En Yeni</option>
                 <option value="mostLiked">En Çok Beğenilen</option>
-                <option value="mostCommented">En Çok Yorum Alan</option>
-                @* <option value="mostVoted">En Çok Oy Alan</option> *@
+                <option value="mostCommented">En Çok Yorum Alan</option> *@
+                @* <option value="mostVoted">En Çok Oy Alan</option>
             </select>
         </div>
         <div class="col-md-4 d-flex align-items-end">
             <button type="submit" class="btn btn-primary">Filtrele</button>
         </div>
     </div>
-</form>
+</form> *@
 
 <div class="row">
     @foreach (var survey in Model)
