@@ -1,0 +1,61 @@
+@model IEnumerable<Survey>
+
+@{
+    ViewData["Title"] = "Anketler";
+}
+
+<div class="container mt-4">
+    <h2>Anket Yönetimi</h2>
+
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Başlık</th>
+                <th>Kategori</th>
+                <th>Oluşturan</th>
+                <th>Oluşturma Tarihi</th>
+                <th>Şikayet Sayısı</th>
+                <th>Durum</th>
+                <th>İşlemler</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var survey in Model)
+            {
+                <tr>
+                    <td>@survey.Id</td>
+                    <td>@survey.Title</td>
+                    <td>@survey.Category.Name</td>
+                    <td>@survey.CreatedBy.UserName</td>
+                    <td>@survey.CreatedAt.ToString("yyyy-MM-dd HH:mm")</td>
+                    <td>@survey.Reports.Count()</td>
+                    <td>
+                        @if (survey.IsActive)
+                        {
+                            <span class="badge bg-success">Aktif</span>
+                        }
+                        else
+                        {
+                            <span class="badge bg-danger">Pasif</span>
+                        }
+                    </td>
+                    <td class="d-flex justify-content-between">
+                        <a asp-action="Details" asp-route-id="@survey.Id" class="btn btn-sm btn-secondary">
+                            Ankti Gör
+                        </a>
+                        <a asp-action="ToggleActive" asp-route-id="@survey.Id" class="btn btn-sm @(survey.IsActive ? "btn-warning" : "btn-success")">
+                            @(survey.IsActive ? "Pasif Yap" : "Aktif Yap")
+                        </a>
+                        <form style="margin-left: 10px;" asp-action="Delete" asp-controller="Survey" asp-route-id="@survey.Id" method="post" onsubmit="return confirm('Bu anketi silmek istediğinize emin misiniz?');">
+                            <button type="submit" class="btn btn-danger"><i class="bi bi-trash"></i> Anketi Sil</button>
+                        </form>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+
+

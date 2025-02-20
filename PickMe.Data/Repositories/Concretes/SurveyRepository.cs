@@ -82,9 +82,22 @@ namespace PickMe.Data.Repositories.Concretes
                 .Include(s => s.Comments)
                 .Include(s => s.CreatedBy)
                 .Include(s => s.Category)
-                .Where(s => s.CategoryId == categoryId)
+                .Where(s => s.CategoryId == categoryId && s.IsActive)
                 .ToListAsync();
                 
+            return x;
+        }
+
+        public async Task<IEnumerable<Survey>> GetAllSurveysAsync()
+        {
+            var x = await _dbContext.Surveys
+                 .Include(s => s.Likes)
+                 .Include(s => s.Reports)
+                 .Include(s => s.Comments)
+                 .Include(s => s.CreatedBy)
+                 .Include(s => s.Category)
+                 .ToListAsync();
+
             return x;
         }
     }

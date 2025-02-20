@@ -13,6 +13,7 @@
             <th>Likes</th>
             <th>Comments</th>
             <th>Reports</th>
+            <th>Status</th>
             <th>Actions</th>
         </tr>
     </thead>
@@ -24,6 +25,16 @@
                 <td>@survey.Likes.Count</td>
                 <td>@survey.Comments.Count</td>
                 <td>@survey.Reports.Count</td>
+                <td>
+                    @if (survey.IsActive)
+                    {
+                        <span class="badge bg-success">Aktif</span>
+                    }
+                    else
+                    {
+                        <span class="badge bg-danger">Pasif</span>
+                    }
+                </td>
                 <td class="d-flex">
                    
                     <form asp-action="Details" asp-controller="Survey" asp-route-id="@survey.Id" method="get" >

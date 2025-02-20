@@ -31,6 +31,12 @@
     </div>
 }
 
+@if(!Model.IsActive){
+    <div class="alert alert-warning" role="alert">
+        Bu anket şu anda aktif değil. Oylama yapamazsınız.
+    </div>
+}
+else{
 <div class="container mt-4">
     <div class="card">
         @if (User.IsInRole("Admin"))
@@ -182,7 +188,7 @@
         </div>
     </div>
 </div>
-
+}
 <!-- Report Modal -->
 <div class="modal fade" id="reportModal" tabindex="-1">
     <div class="modal-dialog">

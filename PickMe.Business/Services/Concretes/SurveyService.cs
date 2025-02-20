@@ -1,10 +1,14 @@
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Hosting;
 using PickMe.Business.Services.Abstractions;
 using PickMe.Core.Models;
 using PickMe.Data;
 using PickMe.Data.Repositories.Abstracts;
 using System;
 using System.Collections.Generic;
+using System.Runtime.Intrinsics.X86;
+using System.Security.Cryptography;
 using System.Threading.Tasks;
 
 namespace PickMe.Business.Services.Concretes
@@ -14,18 +18,20 @@ namespace PickMe.Business.Services.Concretes
         private readonly ISurveyRepository _surveyRepository;
         private readonly ICommentRepository _commentRepository;
         private readonly ApplicationDbContext _context;
+        private readonly IWebHostEnvironment _environment;
 
-        public SurveyService(ISurveyRepository surveyRepository, ApplicationDbContext context, ICommentRepository commentRepository)
+        public SurveyService(ISurveyRepository surveyRepository, ApplicationDbContext context, ICommentRepository commentRepository, IWebHostEnvironment environment)
         {
             _surveyRepository = surveyRepository;
             _context = context;
             _commentRepository = commentRepository;
+            _environment = environment;
         }
 
         public async Task<Survey> CreateSurveyAsync(Survey survey)
         {
             survey.CreatedAt = DateTime.UtcNow;
-            survey.IsActive = true;
+            survey.IsActive = false;
             return await _surveyRepository.AddAsync(survey);
         }
 
@@ -119,8 +125,6 @@ namespace PickMe.Business.Services.Concretes
             return comment;
         }
 
-
-
         public async Task<Report> ReportSurveyAsync(int surveyId, string userId, string reason)
         {
             var report = new Report
@@ -146,6 +150,9 @@ namespace PickMe.Business.Services.Concretes
             var survey = await _surveyRepository.GetByIdAsync(id);
             if (survey != null)
             {
+
+                DeleteImageIfLocal(survey.Image1Url);
+                DeleteImageIfLocal(survey.Image2Url);
                 await _surveyRepository.RemoveAsync(survey);
             }
         }
@@ -179,6 +186,34 @@ namespace PickMe.Business.Services.Concretes
         public async Task<IEnumerable<Survey>> GetSurveysByCategoryAsync(int categoryId)
         {
             return await _surveyRepository.GetSurveysByCategoryAsync(categoryId);
+        }
+
+        public Task<IEnumerable<Survey>> GetAllSurveysAsync()
+        {
+            return _surveyRepository.GetAllSurveysAsync();
+        }
+
+        public async Task ToggleSurveyStatusAsync(int id)
+        {
+            var survey = await _surveyRepository.GetByIdAsync(id);
+            if (survey != null)
+            {
+                survey.IsActive = !survey.IsActive;
+                await _surveyRepository.UpdateAsync(survey);
+            }
+        }
+    
+    private void DeleteImageIfLocal(string imageUrl)
+        {
+            if (string.IsNullOrEmpty(imageUrl)) return;
+
+            var webRootPath = _environment.WebRootPath;
+            var filePath = Path.Combine(webRootPath, imageUrl.TrimStart('/'));
+
+            if (File.Exists(filePath))
+            {
+                File.Delete(filePath);
+            }
         }
     }
 }

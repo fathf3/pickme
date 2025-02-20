@@ -12,7 +12,7 @@ namespace PickMe.Core.Models
             Reports = new List<Report>();
             Votes = new List<Vote>();
             CreatedAt = DateTime.UtcNow;
-            IsActive = true;
+            IsActive = false;
         }
 
         public int Id { get; set; }

@@ -138,12 +138,16 @@ body {
     border-color: #007bff;
     box-shadow: none;
 }
+
 .alert-message {
-    padding: 10px;
-    margin: 10px 0;
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    padding: 10px 20px;
     border-radius: 5px;
-    color: white;
-    font-weight: bold;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    display: none; /* Baþlangýçta gizli */
+    z-index: 9999; /* Önde kalmasýný saðla */
 }
 
 .success-message {
@@ -153,5 +157,6 @@ body {
 .error-message {
     background-color: red;
 }
+
 
 
