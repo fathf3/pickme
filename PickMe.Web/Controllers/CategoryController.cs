@@ -35,6 +35,7 @@ namespace PickMe.Web.Controllers
                 await _categoryService.CreateCategoryAsync(category);
                 return RedirectToAction(nameof(Index));
             }
+          
             return View(category);
         }
         //Kategori Güncelleme Sayfası
@@ -65,8 +66,18 @@ namespace PickMe.Web.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Delete(int id)
         {
+            var category = await _categoryService.GetCategoryByIdAsync(id);
+
+            if (category.Name == "Genel")
+            {
+                TempData["ErrorMessage"] = "Bu kategoriyi silemezsiniz!"; // Hata mesajını sakla
+                return RedirectToAction(nameof(Index)); // Sayfayı yenile
+            }
+
             await _categoryService.DeleteCategoryAsync(id);
+            TempData["SuccessMessage"] = "Kategori başarıyla silindi!";
             return RedirectToAction(nameof(Index));
         }
+
     }
 }

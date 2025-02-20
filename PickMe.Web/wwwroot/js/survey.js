@@ -4,6 +4,12 @@
             const surveyId = this.getAttribute("data-survey-id");
             const isFirstImage = this.getAttribute("data-image") === "1";
 
+            // Confirm the vote
+            const userConfirmed = confirm("Oyunuzu kaydetmek istediğinize emin misiniz?");
+            if (!userConfirmed) {
+                return; // If the user cancels, do nothing
+            }
+
             fetch("/Survey/Vote", {
                 method: "POST",
                 headers: {
@@ -19,11 +25,16 @@
                     if (data.success) {
                         // Başarı mesajı
                         messageContainer.textContent = "Oyunuz başarıyla kaydedildi!";
-                        messageContainer.className = "alert-message success-message"; // Başarı stilini uygula
+                        messageContainer.className = "alert-message alert alert-success"; 
+
+                        // Refresh the page after a short delay
+                        setTimeout(() => {
+                            location.reload();
+                        }, 3000); // 3 second delay before refreshing
                     } else {
                         // Hata mesajı
                         messageContainer.textContent = "Hata: " + data.message;
-                        messageContainer.className = "alert-message error-message"; // Hata stilini uygula
+                        messageContainer.className = "alert-message alert alert-danger"; 
                     }
 
                     // Mesajı göster

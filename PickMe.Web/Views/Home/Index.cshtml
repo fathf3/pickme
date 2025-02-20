@@ -61,6 +61,8 @@
     </div>
 </form>
 
+<div id="message-container" class="alert-message "></div>
+
 @* <form method="get" class="mb-3">
     <div class="row">
         <div class="col-md-4">
@@ -91,28 +93,25 @@
                 </div>
                 <div class="card-body">
                     <div class="row">
-                        <div class="col-6">
-                            <img src="@survey.Image1Url" class="img-fluid mb-2" alt="Image 1" style="height: 150px; object-fit: cover; width: 100%;">
-                            <div class="text-center">
-                                
-                                <span class="btn btn-sm btn-primary">
-                                    @survey.Image1Votes <i class="bi bi-person"></i>
-                                </span>
-                                <br />
-                            </div>
-                        </div>
-                        <div class="col-6">
-                            <img src="@survey.Image2Url" class="img-fluid mb-2" alt="Image 2" style="height: 150px; object-fit: cover; width: 100%;">
-                            <div class="text-center">
-                            </div>
-                            <div class="text-center">
-                                
-                                <span class="btn btn-sm btn-primary">
-                                    @survey.Image2Votes <i class="bi bi-person"></i>
-                                </span>
-                                
+                        <div class="col-md-6 mb-3 text-center">
+                            <div class="image-container">
+                                <img src="@survey.Image1Url" alt="Resim 1" class="survey-image img-fluid w-100 vote-button" data-survey-id="@survey.Id" data-image="1">
+                                <div class="vote-count mt-2">
+                                </div>
                             </div>
                             <br />
+                            <span class="btn btn-sm btn-primary">@survey.Image1Votes <i class="bi bi-person"></i></span>
+                        </div>
+                        <div class="col-md-6 mb-3 text-center ">
+                            <div class="image-container ">
+                                <img src="@survey.Image2Url" alt="Resim 2" class="survey-image img-fluid w-100 vote-button" data-survey-id="@survey.Id" data-image="2">
+                                <div class="vote-count mt-2">
+                                </div>
+                            </div>
+                            <br />
+                            <span class="btn btn-sm btn-primary">
+                                @survey.Image2Votes <i class="bi bi-person"></i>
+                            </span>
                         </div>
                        
                         <div class="progress-container">
@@ -210,4 +209,4 @@
         });
     });
 </script>
-
+<script src="~/js/survey.js"></script>

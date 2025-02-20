@@ -221,7 +221,7 @@ namespace PickMe.Web.Controllers
             {
                 // Survey'i silme işlemi burada yapılabilir
                 await _surveyService.DeleteSurveyAsync(id);
-                return RedirectToAction(nameof(Index));
+                return Redirect(Request.Headers["Referer"].ToString());
             }
             else
             {
@@ -232,26 +232,19 @@ namespace PickMe.Web.Controllers
         }
 
         // GET: Survey
-        public async Task<IActionResult> Index(string filterType, int? categoryId)
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> AdminIndex()
         {
-            IEnumerable<Survey> surveys;
-
-            switch (filterType)
-            {
-                case "mostLiked":
-                    surveys = await _surveyService.GetMostLikedSurveysAsync();
-                    break;
-                case "mostCommented":
-                    surveys = await _surveyService.GetMostCommentedSurveysAsync();
-                    break;
-
-                default: // En yeni anketler (varsayılan)
-                    surveys = await _surveyService.GetActiveSurveysAsync();
-                    break;
-            }
+            var surveys = await _surveyService.GetAllSurveysAsync();
 
             return View(surveys);
 
+        }
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> ToggleActive(int id)
+        {
+            await _surveyService.ToggleSurveyStatusAsync(id);
+            return RedirectToAction("AdminIndex");
         }
 
         [HttpGet]
@@ -262,7 +255,7 @@ namespace PickMe.Web.Controllers
             return View(comments);
         }
 
-        [Authorize]
+        
         [HttpGet]
         public async Task<IActionResult> MySurvey()
         {

@@ -9,6 +9,15 @@
 
 <a asp-action="Create" class="btn btn-primary mb-3">Yeni Kategori Ekle</a>
 
+@if (TempData["ErrorMessage"] != null)
+{
+    <div class="alert alert-danger">@TempData["ErrorMessage"]</div>
+}
+@if (TempData["SuccessMessage"] != null)
+{
+    <div class="alert alert-success">@TempData["SuccessMessage"]</div>
+}
+
 <table class="table table-bordered">
     <thead>
         <tr>
@@ -29,6 +38,7 @@
                     <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-warning btn-sm">Düzenle</a>
                     <form asp-action="Delete" method="post" style="display:inline;">
                         <input type="hidden" name="id" value="@item.Id" />
+                       
                         <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Silmek istediğinize emin misiniz?');">Sil</button>
                     </form>
                 </td>

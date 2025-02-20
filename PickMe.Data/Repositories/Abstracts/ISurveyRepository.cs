@@ -8,6 +8,7 @@ namespace PickMe.Data.Repositories.Abstracts
     {
         Task<IEnumerable<Survey>> GetUserSurveysAsync(string userId);
         Task<IEnumerable<Survey>> GetActiveSurveysAsync();
+        Task<IEnumerable<Survey>> GetAllSurveysAsync();
         Task<bool> HasUserVotedAsync(int surveyId, string userId);
         Task IncrementVoteAsync(int surveyId, bool isFirstImage);
         Task<Survey> GetSurveyWithCommentsAndLikeAsync(int surveyId);
