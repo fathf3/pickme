@@ -93,36 +93,33 @@
                 </div>
                 <div class="card-body">
                     <div class="row">
-                        <div class="col-md-6 mb-3 text-center">
-                            <div class="image-container">
-                                <img src="@survey.Image1Url" alt="Resim 1" class="survey-image img-fluid w-100 vote-button" data-survey-id="@survey.Id" data-image="1">
-                                <div class="vote-count mt-2">
+                        <div class="row d-flex flex-wrap">
+                            <div class="col-6 text-center">
+                                <div class="image-container">
+                                    <img src="@survey.Image1Url" alt="Resim 1" class="survey-image img-fluid w-100 vote-button" data-survey-id="@survey.Id" data-image="1">
+                                    
                                 </div>
+                                <p></p>
+                                <span class="btn btn-sm btn-primary">@survey.Image1Votes <i class="bi bi-person"></i></span>
                             </div>
-                            <br />
-                            <span class="btn btn-sm btn-primary">@survey.Image1Votes <i class="bi bi-person"></i></span>
-                        </div>
-                        <div class="col-md-6 mb-3 text-center ">
-                            <div class="image-container ">
-                                <img src="@survey.Image2Url" alt="Resim 2" class="survey-image img-fluid w-100 vote-button" data-survey-id="@survey.Id" data-image="2">
-                                <div class="vote-count mt-2">
+                            <div class="col-6 text-center">
+                                <div class="image-container">
+                                    <img src="@survey.Image2Url" alt="Resim 2" class="survey-image img-fluid w-100 vote-button" data-survey-id="@survey.Id" data-image="2">
+                                    
                                 </div>
-                            </div>
-                            <br />
-                            <span class="btn btn-sm btn-primary">
-                                @survey.Image2Votes <i class="bi bi-person"></i>
-                            </span>
-                        </div>
-                       
-                        <div class="progress-container">
-                            <div class="progress-bar-custom bg-blue-gradient" style="width: @image1Percentage%;">
-                                @image1Percentage.ToString("0.##")%
-                            </div>
-                            <div class="progress-bar-custom bg-light-blue" style="width: @image2Percentage%;">
-                                @image2Percentage.ToString("0.##")%
+                                <p></p>
+                                <span class="btn btn-sm btn-primary">@survey.Image2Votes <i class="bi bi-person"></i></span>
                             </div>
                         </div>
-
+                    </div>
+                    <br />
+                    <div class="progress-container">
+                        <div class="progress-bar-custom bg-blue-gradient" style="width: @image1Percentage%;">
+                            @image1Percentage.ToString("0.##")%
+                        </div>
+                        <div class="progress-bar-custom bg-light-blue" style="width: @image2Percentage%;">
+                            @image2Percentage.ToString("0.##")%
+                        </div>
                     </div>
                     <p class="card-text mt-3">@survey.Description</p>
                     <div class="d-flex justify-content-between align-items-center mb-4">
@@ -209,4 +206,4 @@
         });
     });
 </script>
-<script src="~/js/survey.js"></script>
+<script src="~/js/survey.js" asp-append-version="true"></script>

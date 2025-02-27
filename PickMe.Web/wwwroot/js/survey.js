@@ -30,7 +30,7 @@
                         // Refresh the page after a short delay
                         setTimeout(() => {
                             location.reload();
-                        }, 3000); // 3 second delay before refreshing
+                        }, 2000); // 2 second delay before refreshing
                     } else {
                         // Hata mesajı
                         messageContainer.textContent = "Hata: " + data.message;
