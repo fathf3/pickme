@@ -19,7 +19,7 @@ namespace PickMe.Business.Services.Concretes
             // Aynı isimde bir kategori var mı kontrol et
             var existingCategory = await _categoryRepository.FindAsync(c => c.Name == category.Name);
 
-            if (existingCategory != null)
+            if (existingCategory.Count() != 0)
             {
                 throw new Exception("Bu kategori adı zaten mevcut!");
             }

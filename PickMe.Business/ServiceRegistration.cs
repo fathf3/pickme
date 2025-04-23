@@ -3,6 +3,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using PickMe.Business.Services.Abstractions;
 using PickMe.Business.Services.Concretes;
+using PickMe.Core.Models;
 using PickMe.Core.ViewModels;
 using System;
 using System.Collections.Generic;
@@ -22,6 +23,7 @@ namespace PickMe.Business
             services.AddScoped<IReportService, ReportService>();
             services.AddScoped<IEmailService, EmailService>();
             services.AddScoped<ICategoryService, CategoryService>();
+            
 
             //services.Configure<EmailSettingsViewModel>(configuration.GetSection("Email"));
             services.Configure<DataProtectionTokenProviderOptions>(options =>

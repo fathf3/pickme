@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Hosting;
 using PickMe.Business.Services.Abstractions;
@@ -19,13 +20,18 @@ namespace PickMe.Business.Services.Concretes
         private readonly ICommentRepository _commentRepository;
         private readonly ApplicationDbContext _context;
         private readonly IWebHostEnvironment _environment;
+        private readonly IEmailService _emailService;
+        private readonly UserManager<ApplicationUser> _userService;
 
-        public SurveyService(ISurveyRepository surveyRepository, ApplicationDbContext context, ICommentRepository commentRepository, IWebHostEnvironment environment)
+        public SurveyService(ISurveyRepository surveyRepository, ApplicationDbContext context, ICommentRepository commentRepository, IWebHostEnvironment environment, IEmailService emailService, UserManager<ApplicationUser> userService)
         {
             _surveyRepository = surveyRepository;
             _context = context;
             _commentRepository = commentRepository;
             _environment = environment;
+
+            _emailService = emailService;
+            _userService = userService;
         }
 
         public async Task<Survey> CreateSurveyAsync(Survey survey)
@@ -200,10 +206,11 @@ namespace PickMe.Business.Services.Concretes
             {
                 survey.IsActive = !survey.IsActive;
                 await _surveyRepository.UpdateAsync(survey);
+                
             }
         }
-    
-    private void DeleteImageIfLocal(string imageUrl)
+
+        private void DeleteImageIfLocal(string imageUrl)
         {
             if (string.IsNullOrEmpty(imageUrl)) return;
 
@@ -215,5 +222,16 @@ namespace PickMe.Business.Services.Concretes
                 File.Delete(filePath);
             }
         }
+        //private async void SendSurveyApprovalEmail(int id)
+        //{
+        //    var survey = await _surveyRepository.GetByIdAsync(id);
+        //    var user = await _userService.FindByIdAsync(survey.CreatedById);
+        //    if (user != null)
+        //    {
+        //        var subject = "Anketiniz Onaylandý";
+        //        var message = $"Anketiniz '{survey.Title}' yayýna alýnmýþtýr.";
+        //        await _emailService.SendEmailAsync(user.Email, subject, message,true);
+        //    }
+        //}
     }
 }
