@@ -1,10 +1,9 @@
-html {
+ï»¿html {
     font-size: 14px;
 }
 
 a {
-    text-decoration: none; /* Alt çizgiyi kaldýrýr */
-    
+    text-decoration: none; /* Alt Ã§izgiyi kaldÃ½rÃ½r */
 }
 
 @media (min-width: 768px) {
@@ -64,7 +63,7 @@ body {
 }
 
 .bg-light-blue {
-    background: linear-gradient(90deg, #82b1ff, #5c92e0); /* Açýk mavi gradient */
+    background: linear-gradient(90deg, #82b1ff, #5c92e0); /* AÃ§Ã½k mavi gradient */
 }
 
 /* Survey Details */
@@ -74,7 +73,7 @@ body {
     overflow: hidden;
     border-radius: 8px;
     box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-    max-width: 200px; /* Maksimum geniþlik */
+    max-width: 200px; /* Maksimum geniÃ¾lik */
     margin: 0 auto; /* Merkeze hizalama */
 }
 
@@ -82,7 +81,7 @@ body {
     width: 100%;
     height: 100%;
     object-fit: cover;
-    max-height: 200px; /* Maksimum yükseklik */
+    max-height: 200px; /* Maksimum yÃ¼kseklik */
 }
 
 .vote-count {
@@ -92,7 +91,7 @@ body {
 .vote-button {
     display: block;
     width: 100%;
-    max-width: 200px; /* Buton geniþliðini resimle ayný yap */
+    max-width: 200px; /* Buton geniÃ¾liÃ°ini resimle aynÃ½ yap */
     margin: 0 auto; /* Merkeze hizalama */
 }
 
@@ -134,10 +133,10 @@ body {
     border-radius: 8px;
 }
 
-.comment-form textarea:focus {
-    border-color: #007bff;
-    box-shadow: none;
-}
+    .comment-form textarea:focus {
+        border-color: #007bff;
+        box-shadow: none;
+    }
 
 .alert-message {
     position: fixed;
@@ -146,8 +145,8 @@ body {
     padding: 10px 20px;
     border-radius: 5px;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
-    display: none; /* Baþlangýçta gizli */
-    z-index: 9999; /* Önde kalmasýný saðla */
+    display: none; /* BaÃ¾langÃ½Ã§ta gizli */
+    z-index: 9999; /* Ã–nde kalmasÃ½nÃ½ saÃ°la */
 }
 
 .success-message {
@@ -157,6 +156,3 @@ body {
 .error-message {
     background-color: red;
 }
-
-
-

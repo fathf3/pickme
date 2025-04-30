@@ -64,7 +64,7 @@ namespace PickMe.Web.Controllers
             // Resim dosyalarını kaydet
             string image1Path = await _imageService.UploadSurveyImageAsync(model.Image1File);
             string image2Path = await _imageService.UploadSurveyImageAsync(model.Image2File);
-
+           
             var survey = new Survey
             {
                 Title = model.Title,
@@ -76,6 +76,7 @@ namespace PickMe.Web.Controllers
             };
 
             await _surveyService.CreateSurveyAsync(survey);
+            TempData["Warning"] = "Anketiniz onay beklemektedir"; // Mesajı sakla
             return RedirectToAction("Index","Home");
         }
 
@@ -125,8 +126,8 @@ namespace PickMe.Web.Controllers
         }
 
         [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> ToggleLike(int surveyId)
+       
+        public async Task<IActionResult> ToggleLike([FromQuery] int surveyId)
         {
             var userId = _userService.GetUserId(User);
             if (string.IsNullOrEmpty(userId))
@@ -139,8 +140,8 @@ namespace PickMe.Web.Controllers
             {
                 result = await _surveyService.AddLikeAsync(surveyId, userId);
             }
-            // Buton işlevinden sonra aynı sayfada kalır.
-            return Redirect(Request.Headers["Referer"].ToString());
+
+            return Ok();
         }
 
         [HttpPost]

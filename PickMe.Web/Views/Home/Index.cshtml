@@ -30,6 +30,29 @@
         </div>
     </div>
 }
+else if (TempData["Warning"] != null)
+{
+   
+        <script>
+            document.addEventListener("DOMContentLoaded", function () {
+                var toastElement = document.getElementById("report-toast");
+                var toast = new bootstrap.Toast(toastElement);
+                toast.show();
+            });
+        </script>
+
+        <div class="toast-container position-fixed top-0 end-0 p-3">
+            <div id="report-toast" class="toast align-items-center text-black bg-warning border-0" role="alert" aria-live="assertive" aria-atomic="true">
+                <div class="d-flex">
+                    <div class="toast-body">
+                    @TempData["Warning"]
+                    </div>
+                    <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+                </div>
+            </div>
+        </div>
+    
+}
 
 <div class="text-center mb-4">
     <h1 class="display-4">PickMe'ye Hoş Geldiniz</h1>
@@ -124,10 +147,10 @@
                     <p class="card-text mt-3">@survey.Description</p>
                     <div class="d-flex justify-content-between align-items-center mb-4">
                         <div>
-                            <form asp-controller="Survey" asp-action="ToggleLike" method="post" class="d-inline">
+                            <form id="likeForm-@survey.Id" class="d-inline" onsubmit="toggleLike(event, @survey.Id)">
                                 <input type="hidden" name="surveyId" value="@survey.Id" />
                                 <button type="submit" class="btn @(survey.Likes?.Any(l => l.UserId == User?.FindFirstValue(ClaimTypes.NameIdentifier)) == true ? "btn-danger" : "btn-outline-danger")">
-                                    <i class="bi bi-heart-fill"></i> @(survey.Likes?.Count ?? 0)
+                                    <i class="bi bi-heart-fill"></i> <span>@(survey.Likes?.Count ?? 0)</span>
                                 </button>
                             </form>
                         </div>
@@ -205,5 +228,46 @@
             }
         });
     });
+</script>
+<script>
+    async function toggleLike(event, surveyId) {
+        event.preventDefault();
+
+        const response = await fetch(`/Survey/ToggleLike?surveyId=${surveyId}`, {
+            method: 'POST'
+        });
+
+        if (response.ok) {
+            console.log("Like başarılı!");
+
+            // Butonu bul
+            const form = document.getElementById(`likeForm-${surveyId}`);
+            const button = form.querySelector('button');
+            const icon = button.querySelector('i');
+            const countSpan = button.querySelector('span'); // Like sayısını span içine koyacağız (az sonra)
+
+            // Buton class'ını değiştir
+            if (button.classList.contains('btn-outline-danger')) {
+                button.classList.remove('btn-outline-danger');
+                button.classList.add('btn-danger');
+            } else {
+                button.classList.remove('btn-danger');
+                button.classList.add('btn-outline-danger');
+            }
+
+            // Like sayısını güncelle
+            if (countSpan) {
+                let count = parseInt(countSpan.innerText);
+                if (button.classList.contains('btn-danger')) {
+                    count++;
+                } else {
+                    count--;
+                }
+                countSpan.innerText = count;
+            }
+        } else {
+            console.error("Bir hata oluştu.");
+        }
+    }
 </script>
 <script src="~/js/survey.js" asp-append-version="true"></script>

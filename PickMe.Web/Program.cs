@@ -8,6 +8,7 @@ using PickMe.Data;
 using PickMe.Data.Repositories.Abstracts;
 using PickMe.Data.Repositories.Concretes;
 
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -15,7 +16,7 @@ builder.Services.AddControllersWithViews();
 
 // Configure DbContext
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection2")));
+    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection3")));
 
 // Configure Identity
 builder.Services.AddIdentity<ApplicationUser, IdentityRole>()

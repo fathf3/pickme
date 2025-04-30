@@ -4,23 +4,24 @@
 }
 
 <div class="text-center">
-@if (ViewBag.StatusCode != null)
-{
-    <h1>Hata Kodu: <h1>@ViewBag.StatusCode</h1></h1>
+    @if (ViewBag.StatusCode != null)
+    {
+        <h1>Hata Kodu: <h1>@ViewBag.StatusCode</h1></h1>
 
-    @if (ViewBag.StatusCode == 404)
-    {
-        <h3>Üzgünüz, aradığınız sayfa bulunamadı.</h3>
+        @if (ViewBag.StatusCode == 404)
+        {
+                <h3>Üzgünüz, aradığınız sayfa bulunamadı.</h3>
+        }
+        else if (ViewBag.StatusCode == 500)
+        {
+                    <h3>Sunucuda beklenmeyen bir hata oluştu.</h3>
+        }
+        else
+        {
+                    <h3>Bir hata oluştu. Lütfen tekrar deneyin.</h3>
+                            
+        }
     }
-    else if (ViewBag.StatusCode == 500)
-    {
-            <h3>Sunucuda beklenmeyen bir hata oluştu.</h3>
-    }
-    else
-    {
-            <h3>Bir hata oluştu. Lütfen tekrar deneyin.</h3>
-    }
-}
 <p>Bir hata meydana geldi. Ana sayfaya <a href="/">geri dönün</a>.</p>
-
+   
 </div>

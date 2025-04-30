@@ -53,21 +53,33 @@ else{
                 <small class="text-muted">@Model.CreatedAt.ToString("dd.MM.yyyy HH:mm")</small>
             </div>
         </div>
-        <div class="card-body">
-            <p class="mb-4">@Model.Description</p>
-
-                        </div>
-                        <div class="col-6 text-center">
-                            <div class="image-container">
-                                <img src="@Model.Image2Url" alt="Resim 2" class="survey-image img-fluid w-100 vote-button" data-survey-id="@Model.Id" data-image="2">
-
+            <div class="card-body">
+                <p class="mb-4">@Model.Description</p>
+                <div id="message-container" style="display:none;" class="alert alert-success"></div>
+                <div class="row">
+                    <div class="col-md-6 mb-3 text-center">
+                        <div class="image-container">
+                            <img src="@Model.Image1Url" alt="Resim 1" class="survey-image img-fluid w-100 vote-button" data-survey-id="@Model.Id" data-image="1">
+                            <div class="vote-count mt-2">
                             </div>
-                            <p></p>
-                            <span class="btn btn-sm btn-primary">@Model.Image2Votes <i class="bi bi-person"></i></span>
                         </div>
+                        <br />
+                        <span class="btn btn-sm btn-primary">@Model.Image1Votes <i class="bi bi-person"></i></span>
                     </div>
+
+                    <div class="col-md-6 mb-3 text-center ">
+                        <div class="image-container ">
+                            <img src="@Model.Image2Url" alt="Resim 2" class="survey-image img-fluid w-100 vote-button" data-survey-id="@Model.Id" data-image="2">
+                            <div class="vote-count mt-2">
+                            </div>
+                        </div>
+                        <br />
+                        <span class="btn btn-sm btn-primary">
+                            @Model.Image2Votes <i class="bi bi-person"></i>
+                        </span>
+                    </div>
+
                 </div>
-                <br />
                 <div class="progress-container">
                     <div class="progress-bar-custom bg-blue-gradient" style="width: @image1Percentage%;">
                         @image1Percentage.ToString("0.##")%
@@ -76,104 +88,104 @@ else{
                         @image2Percentage.ToString("0.##")%
                     </div>
                 </div>
-            <br />
-            <div class="d-flex justify-content-between align-items-center mb-4">
-                <div>
-                    <form asp-action="ToggleLike" method="post" class="d-inline">
-                        <input type="hidden" name="surveyId" value="@Model.Id" />
-                        <button type="submit" class="btn @(Model.Likes?.Any(l => l.UserId == User?.FindFirstValue(ClaimTypes.NameIdentifier)) == true ? "btn-danger" : "btn-outline-danger")">
-                            <i class="bi bi-heart-fill"></i> @(Model.Likes?.Count ?? 0)
-                        </button>
-                    </form>
-                </div>
-                <button class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#reportModal">
-                    <i class="bi bi-flag-fill"></i> Şikayet Et
-                </button>
-            </div>
-
-            <!-- Yorumlar Bölümü -->
-            <div class="card mt-4">
-                <div class="card-header">
-                    <div class="d-flex justify-content-between align-items-center">
-                        <h4 class="mb-0">Yorumlar (@(Model.Comments?.Count ?? 0))</h4>
-                        <a asp-action="Comments" asp-route-id="@Model.Id" class="btn btn-outline-primary btn-sm">
-                            <i class="bi bi-chat-dots"></i> Tüm Yorumları Gör
-                        </a>
-                    </div>
-                </div>
-                <div class="card-body">
-                    <!-- Yorum Formu -->
-                    <div class="mb-4">
-                        <form asp-action="AddComment" method="post">
+                <br />
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <div>
+                        <form asp-action="ToggleLike" method="post" class="d-inline">
                             <input type="hidden" name="surveyId" value="@Model.Id" />
-                            <div class="form-group">
-                                <textarea name="content" class="form-control" rows="3"
-                                          placeholder="Yorumunuzu yazın..." required></textarea>
-                            </div>
-                            <button type="submit" class="btn btn-primary mt-2">
-                                <i class="bi bi-send"></i> Yorum Ekle
+                            <button type="submit" class="btn @(Model.Likes?.Any(l => l.UserId == User?.FindFirstValue(ClaimTypes.NameIdentifier)) == true ? "btn-danger" : "btn-outline-danger")">
+                                <i class="bi bi-heart-fill"></i> @(Model.Likes?.Count ?? 0)
                             </button>
                         </form>
                     </div>
+                    <button class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#reportModal">
+                        <i class="bi bi-flag-fill"></i> Şikayet Et
+                    </button>
+                </div>
 
-                    <!-- Yorumlar Tablosu -->
-                    <div class="table-responsive">
-                        <table class="table table-hover">
-                            <thead class="table-light">
-                                <tr>
-                                    <th style="width: 20%">Kullanıcı</th>
-                                    <th style="width: 60%">Yorum</th>
-                                    <th style="width: 20%">Tarih</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @if (Model.Comments != null && Model.Comments.Any())
-                                {
-                                    @foreach (var comment in Model.Comments.OrderByDescending(c => c.CreatedAt))
+                <!-- Yorumlar Bölümü -->
+                <div class="card mt-4">
+                    <div class="card-header">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <h4 class="mb-0">Yorumlar (@(Model.Comments?.Count ?? 0))</h4>
+                            <a asp-action="Comments" asp-route-id="@Model.Id" class="btn btn-outline-primary btn-sm">
+                                <i class="bi bi-chat-dots"></i> Tüm Yorumları Gör
+                            </a>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <!-- Yorum Formu -->
+                        <div class="mb-4">
+                            <form asp-action="AddComment" method="post">
+                                <input type="hidden" name="surveyId" value="@Model.Id" />
+                                <div class="form-group">
+                                    <textarea name="content" class="form-control" rows="3"
+                                              placeholder="Yorumunuzu yazın..." required></textarea>
+                                </div>
+                                <button type="submit" class="btn btn-primary mt-2">
+                                    <i class="bi bi-send"></i> Yorum Ekle
+                                </button>
+                            </form>
+                        </div>
+
+                        <!-- Yorumlar Tablosu -->
+                        <div class="table-responsive">
+                            <table class="table table-hover">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th style="width: 20%">Kullanıcı</th>
+                                        <th style="width: 60%">Yorum</th>
+                                        <th style="width: 20%">Tarih</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @if (Model.Comments != null && Model.Comments.Any())
                                     {
-                                        <tr class="comment-row">
-                                            <td>
-                                                <div class="d-flex align-items-center">
-                                                    <i class="bi bi-person-circle text-primary me-2"></i>
-                                                    <span>@comment.User?.UserName</span>
-                                                </div>
-                                            </td>
-                                            <td>@comment.Content</td>
-                                            <td>
-                                                <small class="text-muted">
-                                                    @comment.CreatedAt.ToString("dd.MM.yyyy HH:mm")
-                                                </small>
-                                            </td>
-                                        </tr>
+                                        @foreach (var comment in Model.Comments.OrderByDescending(c => c.CreatedAt))
+                                        {
+                                            <tr class="comment-row">
+                                                <td>
+                                                    <div class="d-flex align-items-center">
+                                                        <i class="bi bi-person-circle text-primary me-2"></i>
+                                                        <span>@comment.User?.UserName</span>
+                                                    </div>
+                                                </td>
+                                                <td>@comment.Content</td>
+                                                <td>
+                                                    <small class="text-muted">
+                                                        @comment.CreatedAt.ToString("dd.MM.yyyy HH:mm")
+                                                    </small>
+                                                </td>
+                                            </tr>
+                                        }
+                                        @if (Model.Comments.Count > 5)
+                                        {
+                                            <tr>
+                                                <td colspan="3" class="text-center">
+                                                    <a asp-action="Comments" asp-route-id="@Model.Id" class="btn btn-link">
+                                                        Diğer yorumları gör...
+                                                    </a>
+                                                </td>
+                                            </tr>
+                                        }
                                     }
-                                    @if (Model.Comments.Count > 5)
+                                    else
                                     {
                                         <tr>
-                                            <td colspan="3" class="text-center">
-                                                <a asp-action="Comments" asp-route-id="@Model.Id" class="btn btn-link">
-                                                    Diğer yorumları gör...
-                                                </a>
+                                            <td colspan="3" class="text-center text-muted py-4">
+                                                <i class="bi bi-chat-dots display-4 d-block mb-2"></i>
+                                                Henüz yorum yapılmamış. İlk yorumu siz yapın!
                                             </td>
                                         </tr>
                                     }
-                                }
-                                else
-                                {
-                                    <tr>
-                                        <td colspan="3" class="text-center text-muted py-4">
-                                            <i class="bi bi-chat-dots display-4 d-block mb-2"></i>
-                                            Henüz yorum yapılmamış. İlk yorumu siz yapın!
-                                        </td>
-                                    </tr>
-                                }
-                            </tbody>
-                        </table>
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-</div>
 }
 <!-- Report Modal -->
 <div class="modal fade" id="reportModal" tabindex="-1">
@@ -206,5 +218,3 @@ else{
     }
     <script src="~/js/survey.js"></script>
 }
-
-

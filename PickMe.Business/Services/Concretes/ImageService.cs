@@ -6,10 +6,12 @@ using System;
 using SixLabors.ImageSharp.Formats.Jpeg;
 using System.Threading.Tasks;
 using static System.Net.Mime.MediaTypeNames;
+using Microsoft.Extensions.Logging;
 
 public class ImageService : IImageService
 {
     private readonly string _uploadFolderPath;
+    
 
     public ImageService()
     {
@@ -27,6 +29,7 @@ public class ImageService : IImageService
 
         var uniqueFileName = $"{Guid.NewGuid()}_{imageFile.FileName}";
         var filePath = Path.Combine(_uploadFolderPath, uniqueFileName);
+       
 
         using (var stream = imageFile.OpenReadStream())
         {
