@@ -10,6 +10,8 @@ using PickMe.Business.Services.Abstractions;
 using PickMe.Core.ViewModels;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using PickMe.Web.Models;
+using Azure.Core;
 
 namespace PickMe.Web.Controllers
 {
@@ -113,7 +115,7 @@ namespace PickMe.Web.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> AddComment(int surveyId, string content)
+        public async Task<IActionResult> AddComment([FromBody] CommentRequest request)
         {
             var userId = _userService.GetUserId(User);
             if (string.IsNullOrEmpty(userId))
@@ -121,8 +123,8 @@ namespace PickMe.Web.Controllers
                 return Unauthorized();
             }
 
-            var comment = await _surveyService.AddCommentAsync(surveyId, userId, content);
-            return RedirectToAction("Details", new { id = surveyId });
+            var comment = await _surveyService.AddCommentAsync(request.surveyId, userId, request.content);
+            return RedirectToAction("Details", new { id = request.surveyId });
         }
 
         [HttpPost]
@@ -144,9 +146,11 @@ namespace PickMe.Web.Controllers
             return Ok();
         }
 
+        
+
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Report(int surveyId, string reason)
+        public async Task<IActionResult> Report([FromBody] ReportRequest request)
         {
             var userId = _userService.GetUserId(User);
             if (string.IsNullOrEmpty(userId))
@@ -154,7 +158,7 @@ namespace PickMe.Web.Controllers
                 return Unauthorized();
             }
 
-            var report = await _surveyService.ReportSurveyAsync(surveyId, userId, reason);
+            var report = await _surveyService.ReportSurveyAsync(request.surveyId, userId, request.reason);
             TempData["ReportSuccess"] = "Şikayetiniz başarıyla gönderildi."; // Mesajı sakla
             return Redirect(Request.Headers["Referer"].ToString());
         }

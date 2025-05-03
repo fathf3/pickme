@@ -6,6 +6,7 @@
     var categories = ViewBag.Categories as List<Category>;
     int? selectedCategory = ViewBag.SelectedCategory as int?;
     string selectedFilter = ViewBag.SelectedFilter as string;
+    bool isLoggedIn = User.Identity?.IsAuthenticated ?? false;
 
 }
 
@@ -59,8 +60,13 @@ else if (TempData["Warning"] != null)
     
 </div>
 <form method="get" action="@Url.Action("Index")">
+
+   
     <div class="row mb-3">
-        <div class="col-md-6">
+        <div class="col-md-4 d-flex align-items-end justify-content-center">
+            <a href="/Survey/Create" class="btn btn-primary">Kendi Anketinizi Oluşturun</a>
+        </div>
+        <div class="col-md-4">
             <label for="categoryFilter" class="form-label">Kategori Seç:</label>
             <select id="categoryFilter" name="categoryId" class="form-select" onchange="this.form.submit()">
                 <option value="">Tüm Kategoriler</option>
@@ -73,7 +79,7 @@ else if (TempData["Warning"] != null)
             </select>
         </div>
 
-        <div class="col-md-6">
+        <div class="col-md-4">
             <label for="filterType" class="form-label">Sırala:</label>
             <select id="filterType" name="filterType" class="form-select" onchange="this.form.submit()">
                 <option value="">En Yeni</option>
@@ -81,6 +87,7 @@ else if (TempData["Warning"] != null)
                 <option value="mostCommented" selected="@(selectedFilter == "mostCommented" ? "selected" : null)">En Çok Yorum Alan</option>
             </select>
         </div>
+       
     </div>
 </form>
 
@@ -162,7 +169,8 @@ else if (TempData["Warning"] != null)
                             </div>
                         </a>
                         <button class="btn btn-warning" data-survey-id="@survey.Id"
-                                data-bs-toggle="modal" data-bs-target="#reportModal">
+                                data-bs-toggle="modal" data-bs-target="#reportModal"
+                                onclick="setReportSurveyId(@survey.Id)">
                             <i class="bi bi-flag-fill"></i> Şikayet Et
                         </button>
                     </div>
@@ -183,19 +191,20 @@ else if (TempData["Warning"] != null)
 </div>
 
 <!-- Report Modal -->
-<div class="modal fade" id="reportModal" tabindex="-1">
+<div class="modal fade" id="reportModal" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
-            <form asp-controller="Survey" asp-action="Report" method="post">
-                <input type="hidden" id="surveyId" name="surveyId" />
+            <form onsubmit="submitReport(event)">
+                @Html.AntiForgeryToken()
+                <input type="hidden" id="reportSurveyId" name="surveyId" />
                 <div class="modal-header">
                     <h5 class="modal-title">Anketi Şikayet Et</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body">
                     <div class="form-group">
-                        <label for="reason">Şikayet Nedeni</label>
-                        <textarea name="reason" id="reason" class="form-control" rows="3" required></textarea>
+                        <label for="reportReason">Şikayet Nedeni</label>
+                        <textarea name="reason" id="reportReason" class="form-control" rows="3" required></textarea>
                     </div>
                 </div>
                 <div class="modal-footer">
@@ -229,45 +238,5 @@ else if (TempData["Warning"] != null)
         });
     });
 </script>
-<script>
-    async function toggleLike(event, surveyId) {
-        event.preventDefault();
 
-        const response = await fetch(`/Survey/ToggleLike?surveyId=${surveyId}`, {
-            method: 'POST'
-        });
-
-        if (response.ok) {
-            console.log("Like başarılı!");
-
-            // Butonu bul
-            const form = document.getElementById(`likeForm-${surveyId}`);
-            const button = form.querySelector('button');
-            const icon = button.querySelector('i');
-            const countSpan = button.querySelector('span'); // Like sayısını span içine koyacağız (az sonra)
-
-            // Buton class'ını değiştir
-            if (button.classList.contains('btn-outline-danger')) {
-                button.classList.remove('btn-outline-danger');
-                button.classList.add('btn-danger');
-            } else {
-                button.classList.remove('btn-danger');
-                button.classList.add('btn-outline-danger');
-            }
-
-            // Like sayısını güncelle
-            if (countSpan) {
-                let count = parseInt(countSpan.innerText);
-                if (button.classList.contains('btn-danger')) {
-                    count++;
-                } else {
-                    count--;
-                }
-                countSpan.innerText = count;
-            }
-        } else {
-            console.error("Bir hata oluştu.");
-        }
-    }
-</script>
 <script src="~/js/survey.js" asp-append-version="true"></script>

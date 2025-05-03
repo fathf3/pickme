@@ -98,7 +98,9 @@ else{
                             </button>
                         </form>
                     </div>
-                    <button class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#reportModal">
+                    <button class="btn btn-warning" data-survey-id="@Model.Id"
+                            data-bs-toggle="modal" data-bs-target="#reportModal"
+                            onclick="setReportSurveyId(@Model.Id)">
                         <i class="bi bi-flag-fill"></i> Şikayet Et
                     </button>
                 </div>
@@ -116,10 +118,10 @@ else{
                     <div class="card-body">
                         <!-- Yorum Formu -->
                         <div class="mb-4">
-                            <form asp-action="AddComment" method="post">
+                            <form onsubmit="addComment(event, @Model.Id)">
                                 <input type="hidden" name="surveyId" value="@Model.Id" />
                                 <div class="form-group">
-                                    <textarea name="content" class="form-control" rows="3"
+                                    <textarea id="commentContent-@Model.Id" name="content" class="form-control" rows="3"
                                               placeholder="Yorumunuzu yazın..." required></textarea>
                                 </div>
                                 <button type="submit" class="btn btn-primary mt-2">
@@ -188,19 +190,20 @@ else{
     </div>
 }
 <!-- Report Modal -->
-<div class="modal fade" id="reportModal" tabindex="-1">
+<div class="modal fade" id="reportModal" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
-            <form asp-action="Report" method="post">
-                <input type="hidden" name="surveyId" value="@Model.Id" />
+            <form onsubmit="submitReport(event)">
+                @Html.AntiForgeryToken()
+                <input type="hidden" id="reportSurveyId" name="surveyId" />
                 <div class="modal-header">
                     <h5 class="modal-title">Anketi Şikayet Et</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body">
                     <div class="form-group">
-                        <label for="reason">Şikayet Nedeni</label>
-                        <textarea name="reason" id="reason" class="form-control" rows="3" required></textarea>
+                        <label for="reportReason">Şikayet Nedeni</label>
+                        <textarea name="reason" id="reportReason" class="form-control" rows="3" required></textarea>
                     </div>
                 </div>
                 <div class="modal-footer">

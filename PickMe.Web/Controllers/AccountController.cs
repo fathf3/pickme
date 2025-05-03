@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
 using PickMe.Business.Services.Abstractions;
 using PickMe.Core.Models;
@@ -53,9 +54,18 @@ namespace PickMe.Web.Controllers
 
                 if (result.Succeeded)
                 {
-                    await _signInManager.SignInAsync(user, isPersistent: false);
+                    
                     await _userManager.AddToRoleAsync(user, "User");
-                    return RedirectToAction("Index", "Home");
+                    var token = await _userManager.GenerateEmailConfirmationTokenAsync(user);
+                    var confirmationLink = Url.Action("ConfirmEmail", "Account",
+                        new { userId = user.Id, token = token }, Request.Scheme);
+
+                    await _emailService.SendEmailAsync(user.Email, "E-posta Onayý",
+                        $"Lütfen e-posta adresinizi onaylamak için <a href='{confirmationLink}'>buraya týklayýn</a>.", true);
+
+                    // Giriþ yapmadan önce e-postasýný onaylamasýný iste
+                    return RedirectToAction("RegisterConfirmation");
+
                 }
 
                 foreach (var error in result.Errors)
@@ -63,8 +73,35 @@ namespace PickMe.Web.Controllers
                     ModelState.AddModelError(string.Empty, error.Description);
                 }
             }
-            
+
             return View(model);
+        }
+
+        public async Task<IActionResult> ConfirmEmail(string userId, string token)
+        {
+            if (userId == null || token == null)
+            {
+                return RedirectToAction("Index", "Home");
+            }
+
+            var user = await _userManager.FindByIdAsync(userId);
+            if (user == null)
+            {
+                return NotFound($"Kullanýcý bulunamadý: {userId}");
+            }
+
+            var result = await _userManager.ConfirmEmailAsync(user, token);
+            if (result.Succeeded)
+            {
+                return View("ConfirmEmail"); // onay baþarýlýysa gösterilecek sayfa
+            }
+
+            return View("Error"); // hata sayfasý
+        }
+
+        public  IActionResult RegisterConfirmation()
+        {
+            return View();
         }
 
         [HttpGet]
@@ -87,6 +124,12 @@ namespace PickMe.Web.Controllers
                 {
                     var result = await _signInManager.PasswordSignInAsync(user, model.Password, model.RememberMe, lockoutOnFailure: false);
 
+                    if (user != null && !await _userManager.IsEmailConfirmedAsync(user))
+                    {
+                        ModelState.AddModelError(string.Empty, "Lütfen e-posta adresinizi onaylayýn.");
+                        return View(model);
+                    }
+
                     if (result.Succeeded)
                     {
                         return RedirectToAction("Index", "Home");
@@ -107,7 +150,7 @@ namespace PickMe.Web.Controllers
             return RedirectToAction("Index", "Home");
         }
         [HttpGet]
-        public async Task<IActionResult> ForgotPassword()
+        public IActionResult ForgotPassword()
         {
             return View();
         }
@@ -132,7 +175,7 @@ namespace PickMe.Web.Controllers
                     new { token, email = user.Email }, Request.Scheme);
 
                 // Burada e-posta gönderme servisini kullanarak kullanýcýya mail göndermelisin.
-                await _emailService.SendEmailAsync(user.Email, "Þifre Sýfýrlama Talebi",
+                await _emailService.SendEmailAsync(user!.Email, "Þifre Sýfýrlama Talebi",
                     $"Þifrenizi sýfýrlamak için <a href='{resetLink}'>buraya týklayýn</a>.", true);
 
                 return View("ForgotPasswordConfirmation");
@@ -141,7 +184,7 @@ namespace PickMe.Web.Controllers
             return View(model);
         }
         [HttpGet]
-        public async Task<IActionResult> ForgotPasswordConfirmation()
+        public IActionResult ForgotPasswordConfirmation()
         {
             return View();
         }
