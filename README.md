@@ -3,7 +3,7 @@
 ## Proje Hakkında
 PickMe, kullanıcıların anket oluşturmasına ve yönetmesine olanak sağlayan bir web uygulamasıdır. Kullanıcı dostu arayüzü ve güçlü özellikleri ile anketlerinizi kolayca oluşturabilir, paylaşabilir ve sonuçlarını analiz edebilirsiniz.
 
-Proje Link : http://pickme.runasp.net/
+Proje Link : http://pickme.social/
 
 ## Özellikler
 - **Anket oluşturma ve düzenleme**: Kullanıcılar, çeşitli soru türleri ile anketler oluşturabilir ve bu anketleri istedikleri zaman düzenleyebilir.
